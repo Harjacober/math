@@ -44,25 +44,26 @@ def processString(command):
     for op in ["^","/","*","+","-"]:
         tokens=performOperation(tokens,op) 
     return  tokens[0]
-def usethis(string): 
+def processBraces(string): 
     try:
         float(string)
         print(string)
         return
     except:
         pass
-    pattern = re.compile(r'\((\d+\.?\d?[*/^+-]?)*\)')
+    pattern = re.compile(r'\((\d+\.?\d?[*/^+-]?)*\)') #match the smallest open and closing brace
     match = re.search(pattern, string) 
     if match: 
         ans = processString(match.group()) 
         newstring = re.sub(pattern,str(ans),string,1)
     else: 
+        #no brace found, so process string like that
         newstring = str(processString(string)) 
-    usethis(newstring) 
+    processBraces(newstring) 
  
 args=sys.argv
 string=""
 if __name__=="__main__":
     for i in args[1:]:
         string+=i
-    usethis(string) 
+    processBraces(string) 
