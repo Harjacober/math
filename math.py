@@ -37,9 +37,11 @@ def processString(command):
         if command[-1]!=")":
             raise  ValueError("invalid command")
         command=command[1:lenghts-1] # remove the braces
-    tokens = re.findall(r'(\d+(?=[*/^+-]|$)|\d+\.\d+|[*/^+-])', command)    
-    #tokens = re.findall(r'(\d+|[*/^+-])', command)     #using bodmas rule solve division first then multiplication 
-    # then addition then subtraction
+    integers = '[+-]?\d+' #matches negative or positive integers
+    decimals = '[+-]?\d+\.\d+' #matches negative or positive decimal numbers
+    operators = '(?<=\d)[*/^+-]' #[*/^+-] matches any operator while (?<=\d) ensures that it is preceeded by a number and not another operator
+     
+    tokens = re.findall(r'{}|{}|{}'.format(operators,decimals,integers), command)
 
     for op in ["^","/","*","+","-"]:
         tokens=performOperation(tokens,op) 
@@ -51,7 +53,7 @@ def processBraces(string):
         return
     except:
         pass
-    pattern = re.compile(r'\((\d+\.?\d?[*/^+-]?)*\)') #match the smallest open and closing brace
+    pattern = re.compile(r'\((\d+\.?\d?[*/^+-]*)*\)') #match the smallest open and closing brace
     match = re.search(pattern, string) 
     if match: 
         ans = processString(match.group()) 
